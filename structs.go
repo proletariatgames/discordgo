@@ -1144,6 +1144,7 @@ type Activity struct {
 	Type          ActivityType `json:"type"`
 	URL           string       `json:"url,omitempty"`
 	CreatedAt     time.Time    `json:"created_at"`
+	ID            string       `json:"id,omitempty"`
 	ApplicationID string       `json:"application_id,omitempty"`
 	State         string       `json:"state,omitempty"`
 	Details       string       `json:"details,omitempty"`
