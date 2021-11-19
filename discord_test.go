@@ -1,7 +1,6 @@
 package discordgo
 
 import (
-	"fmt"
 	"os"
 	"runtime"
 	"sync/atomic"
@@ -12,8 +11,8 @@ import (
 //////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////// VARS NEEDED FOR TESTING
 var (
-	dg    *Session // Stores a global discordgo user session
-	dgBot *Session // Stores a global discordgo bot session
+	dgGlobal    *Session // Stores a global discordgo user session
+	dgBotGlobal *Session // Stores a global discordgo bot session
 
 	envToken    = os.Getenv("DGU_TOKEN")  // Token to use when authenticating the user account
 	envBotToken = os.Getenv("DGB_TOKEN")  // Token to use when authenticating the bot account
@@ -22,19 +21,47 @@ var (
 	envAdmin    = os.Getenv("DG_ADMIN")   // User ID of admin user to use for tests
 )
 
-func init() {
-	fmt.Println("Init is being called.")
-	if envBotToken != "" {
-		if d, err := New(envBotToken); err == nil {
-			dgBot = d
+// SkipIfShort will call t.Skip() if go test was passed `-short`
+func SkipIfShort(t *testing.T) {
+	t.Helper()
+	if testing.Short() {
+		t.Skip("Skipping test due to -short")
+	}
+}
+
+// SkipOrGetSession will call t.Skip() if go test was passed `-short`, otherwise it returns
+// the global Session object (which is created, if it doesn't already exist)
+func SkipOrGetSession(t *testing.T) *Session {
+	t.Helper()
+	SkipIfShort(t)
+
+	if dgGlobal == nil {
+		var err error
+		dgGlobal, err = New(envToken)
+		if err != nil || dgGlobal == nil {
+			t.Fatalf("session failed to initialize: %v", err)
 		}
 	}
 
-	if d, err := New(envToken); err == nil {
-		dg = d
-	} else {
-		fmt.Println("dg is nil, error", err)
+	return dgGlobal
+}
+
+// SkipOrGetBotSession will call t.Skip() if go test was passed `-short`, otherwise it returns
+// the global bot Session object (which is created, if it doesn't already exist)
+func SkipOrGetBotSession(t *testing.T) *Session {
+	t.Helper()
+	SkipIfShort(t)
+
+	// TODO: should this just fail if envBotToken isn't set?
+	if dgBotGlobal == nil && envBotToken != "" {
+		var err error
+		dgBotGlobal, err = New(envBotToken)
+		if err != nil || dgBotGlobal == nil {
+			t.Fatalf("bot session failed to initialize: %v", err)
+		}
 	}
+
+	return dgBotGlobal
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -43,6 +70,7 @@ func init() {
 // TestNew tests the New() function without any arguments.  This should return
 // a valid Session{} struct and no errors.
 func TestNew(t *testing.T) {
+	SkipIfShort(t)
 
 	_, err := New()
 	if err != nil {
@@ -52,6 +80,8 @@ func TestNew(t *testing.T) {
 
 // TestInvalidToken tests the New() function with an invalid token
 func TestInvalidToken(t *testing.T) {
+	SkipIfShort(t)
+
 	d, err := New("asjkldhflkjasdh")
 	if err != nil {
 		t.Fatalf("New(InvalidToken) returned error: %+v", err)
@@ -66,6 +96,7 @@ func TestInvalidToken(t *testing.T) {
 
 // TestNewToken tests the New() function with a Token.
 func TestNewToken(t *testing.T) {
+	SkipIfShort(t)
 
 	if envToken == "" {
 		t.Skip("Skipping New(token), DGU_TOKEN not set")
@@ -86,6 +117,7 @@ func TestNewToken(t *testing.T) {
 }
 
 func TestOpenClose(t *testing.T) {
+	SkipIfShort(t)
 	if envToken == "" {
 		t.Skip("Skipping TestClose, DGU_TOKEN not set")
 	}
@@ -135,6 +167,7 @@ func TestOpenClose(t *testing.T) {
 }
 
 func TestAddHandler(t *testing.T) {
+	SkipIfShort(t)
 
 	testHandlerCalled := int32(0)
 	testHandler := func(s *Session, m *MessageCreate) {
@@ -179,6 +212,7 @@ func TestAddHandler(t *testing.T) {
 }
 
 func TestRemoveHandler(t *testing.T) {
+	SkipIfShort(t)
 
 	testHandlerCalled := int32(0)
 	testHandler := func(s *Session, m *MessageCreate) {

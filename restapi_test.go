@@ -10,6 +10,7 @@ import (
 
 // TestChannelMessageSend tests the ChannelMessageSend() function. This should not return an error.
 func TestChannelMessageSend(t *testing.T) {
+	dg := SkipOrGetSession(t)
 
 	if envChannel == "" {
 		t.Skip("Skipping, DG_CHANNEL not set.")
@@ -28,6 +29,7 @@ func TestChannelMessageSend(t *testing.T) {
 /*
 // removed for now, only works on BOT accounts now
 func TestUserAvatar(t *testing.T) {
+	dg := SkipOrGetSession(t)
 
 	if dg == nil {
 		t.Skip("Cannot TestUserAvatar, dg not set.")
@@ -54,6 +56,7 @@ func TestUserAvatar(t *testing.T) {
 
 /* Running this causes an error due to 2/hour rate limit on username changes
 func TestUserUpdate(t *testing.T) {
+	dg := SkipOrGetSession(t)
 	if dg == nil {
 		t.Skip("Cannot test logout, dg not set.")
 	}
@@ -83,6 +86,8 @@ func TestUserUpdate(t *testing.T) {
 //func (s *Session) UserChannelCreate(recipientID string) (st *Channel, err error) {
 
 func TestUserChannelCreate(t *testing.T) {
+	dg := SkipOrGetSession(t)
+
 	if dg == nil {
 		t.Skip("Cannot TestUserChannelCreate, dg not set.")
 	}
@@ -100,6 +105,8 @@ func TestUserChannelCreate(t *testing.T) {
 }
 
 func TestUserChannels(t *testing.T) {
+	dg := SkipOrGetSession(t)
+
 	if dg == nil {
 		t.Skip("Cannot TestUserChannels, dg not set.")
 	}
@@ -111,6 +118,8 @@ func TestUserChannels(t *testing.T) {
 }
 
 func TestUserGuilds(t *testing.T) {
+	dg := SkipOrGetSession(t)
+
 	if dg == nil {
 		t.Skip("Cannot TestUserGuilds, dg not set.")
 	}
@@ -122,6 +131,8 @@ func TestUserGuilds(t *testing.T) {
 }
 
 func TestUserSettings(t *testing.T) {
+	dg := SkipOrGetSession(t)
+
 	if dg == nil {
 		t.Skip("Cannot TestUserSettings, dg not set.")
 	}
@@ -133,6 +144,8 @@ func TestUserSettings(t *testing.T) {
 }
 
 func TestUserUpdateStatus(t *testing.T) {
+	dg := SkipOrGetSession(t)
+
 	if dg == nil {
 		t.Skip("Cannot TestUserSettings, dg not set.")
 	}
@@ -145,6 +158,7 @@ func TestUserUpdateStatus(t *testing.T) {
 
 // TestLogout tests the Logout() function. This should not return an error.
 func TestLogout(t *testing.T) {
+	dg := SkipOrGetSession(t)
 
 	if dg == nil {
 		t.Skip("Cannot TestLogout, dg not set.")
@@ -157,6 +171,7 @@ func TestLogout(t *testing.T) {
 }
 
 func TestGateway(t *testing.T) {
+	dg := SkipOrGetSession(t)
 
 	if dg == nil {
 		t.Skip("Skipping, dg not set.")
@@ -168,6 +183,7 @@ func TestGateway(t *testing.T) {
 }
 
 func TestGatewayBot(t *testing.T) {
+	dgBot := SkipOrGetBotSession(t)
 
 	if dgBot == nil {
 		t.Skip("Skipping, dgBot not set.")
@@ -179,6 +195,7 @@ func TestGatewayBot(t *testing.T) {
 }
 
 func TestVoiceICE(t *testing.T) {
+	dg := SkipOrGetSession(t)
 
 	if dg == nil {
 		t.Skip("Skipping, dg not set.")
@@ -191,6 +208,7 @@ func TestVoiceICE(t *testing.T) {
 }
 
 func TestVoiceRegions(t *testing.T) {
+	dg := SkipOrGetSession(t)
 
 	if dg == nil {
 		t.Skip("Skipping, dg not set.")
@@ -202,6 +220,7 @@ func TestVoiceRegions(t *testing.T) {
 	}
 }
 func TestGuildRoles(t *testing.T) {
+	dg := SkipOrGetSession(t)
 
 	if envGuild == "" {
 		t.Skip("Skipping, DG_GUILD not set.")
@@ -219,6 +238,7 @@ func TestGuildRoles(t *testing.T) {
 }
 
 func TestGuildMemberNickname(t *testing.T) {
+	dg := SkipOrGetSession(t)
 
 	if envGuild == "" {
 		t.Skip("Skipping, DG_GUILD not set.")
@@ -236,6 +256,7 @@ func TestGuildMemberNickname(t *testing.T) {
 
 // TestChannelMessageSend2 tests the ChannelMessageSend() function. This should not return an error.
 func TestChannelMessageSend2(t *testing.T) {
+	dg := SkipOrGetSession(t)
 
 	if envChannel == "" {
 		t.Skip("Skipping, DG_CHANNEL not set.")
@@ -253,6 +274,7 @@ func TestChannelMessageSend2(t *testing.T) {
 
 // TestGuildPruneCount tests GuildPruneCount() function. This should not return an error.
 func TestGuildPruneCount(t *testing.T) {
+	dg := SkipOrGetSession(t)
 
 	if envGuild == "" {
 		t.Skip("Skipping, DG_GUILD not set.")
@@ -271,6 +293,7 @@ func TestGuildPruneCount(t *testing.T) {
 /*
 // TestGuildPrune tests GuildPrune() function. This should not return an error.
 func TestGuildPrune(t *testing.T) {
+	dg := SkipOrGetSession(t)
 
 	if envGuild == "" {
 		t.Skip("Skipping, DG_GUILD not set.")
