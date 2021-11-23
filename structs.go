@@ -751,28 +751,35 @@ type Presence struct {
 // EpochMsTime allows time.Time to be marshalled to/from json as a unix epoch in milliseconds
 type EpochMsTime time.Time
 
+func (e EpochMsTime) IsZero() bool {
+	return time.Time(e).IsZero()
+}
+
 func (e EpochMsTime) Equal(rhs EpochMsTime) bool {
 	return time.Time(e).Equal(time.Time(rhs))
+}
+
+func (e EpochMsTime) Time() time.Time {
+	return time.Time(e)
 }
 
 func (e *EpochMsTime) UnmarshalJSON(data []byte) error {
 	ms, err := strconv.ParseInt(string(data), 10, 64)
 	if err != nil {
-		return err
+		return fmt.Errorf("unable to parse epoch: %w", err)
 	}
-	*e = EpochMsTime(time.Unix(0, ms*1e6))
+	*e = EpochMsTime(time.Unix(0, ms*1e6)) // 1,000,000 ns in 1 ms
 	return nil
 }
 
 func (e EpochMsTime) MarshalJSON() ([]byte, error) {
-	fmt.Printf("--- EpochMsTime: %v, %d\n", e, time.Time(e).UnixMilli())
-	return []byte(strconv.FormatInt(time.Time(e).UnixMilli(), 10)), nil
+	return []byte(strconv.FormatInt(e.Time().UnixMilli(), 10)), nil
 }
 
 // A Timestamps struct contains start and end times used in the rich presence "playing .." Game
 type Timestamps struct {
-	Start EpochMsTime
-	End   EpochMsTime
+	Start *EpochMsTime `json:"start,omitempty"`
+	End   *EpochMsTime `json:"end,omitempty"`
 }
 
 // An Assets struct contains assets and labels used in the rich presence "playing .." Game
@@ -1150,7 +1157,7 @@ type Activity struct {
 	Name          string       `json:"name"`
 	Type          ActivityType `json:"type"`
 	URL           string       `json:"url,omitempty"`
-	CreatedAt     EpochMsTime  `json:"created_at"`
+	CreatedAt     *EpochMsTime `json:"created_at,omitempty"`
 	ID            string       `json:"id,omitempty"` // undocumented, but sent in v8 and v9
 	ApplicationID string       `json:"application_id,omitempty"`
 	State         string       `json:"state,omitempty"`
